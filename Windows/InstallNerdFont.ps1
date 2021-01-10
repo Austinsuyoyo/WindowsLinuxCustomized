@@ -12,8 +12,13 @@ $Json = Invoke-WebRequest $ReleasePage | ConvertFrom-Json
 $LatestVersion = $Json[0].tag_name
 
 $Font_Name_Extend = Write-Menu -Title 'Select one Nerd-Font' -Entries @($Json[0].assets.name)
+if ($null -eq $Font_Name_Extend){
+    Show-Pause "Error happened"
+    EXit
+}
 $Font_Name = $Font_Name_Extend.Split(".")[0]
-Write-Host $Font_Name_Extend
+
+
 
 #######################################################################################
 # Download Sources from github
