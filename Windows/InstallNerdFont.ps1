@@ -1,66 +1,8 @@
 #######################################################################################
-# Function define
-function Pause($message) {
-    # Check if running Powershell ISE
-    if ($psISE) {
-        Add-Type -AssemblyName System.Windows.Forms
-        [System.Windows.Forms.MessageBox]::Show("$message")
-    }
-    else {
-        Write-Host "$message" -ForegroundColor Yellow
-        $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-    }
-}
-function Show-Menu {
-    [CmdletBinding()]
-    param (
-        $options = $Json[0].assets.name
-    )
+# Import Module
+Import-Module $PSScriptRoot\utils\Write-Menu.psm1
+Import-Module $PSScriptRoot\utils\Show-Pause.psm1
 
-    while ($true) { 
-        Clear-Host
-        Write-Host "`r`nPlease select one font that will installed.`r`n"
-        $index = 1
-        $options | ForEach-Object { Write-Host ("{0}.`t{1}" -f $index++, $_ ) }
-        Write-Host "Q.`tQuit"
-        $selection = Read-Host "`r`nEnter Option"
-
-        switch ($selection) {
-            { $_ -like 'Q*' } { 
-                exit
-            } 
-            default {
-                if ([int]::TryParse($selection, [ref]$index)) {
-                    if ($index -gt 0 -and $index -le $options.Count) {
-                        $selection = $options[$index - 1]  # this gives you the text of the selected item
-
-                        Write-Host "Select Font: `t$selection" -ForegroundColor Green
-
-                        return $selection
-                    }
-                    else {
-                        Write-Host "Please enter a valid option from the menu" -ForegroundColor Red
-                    }
-                }
-                else {
-                    Write-Host "Please enter a valid option from the menu" -ForegroundColor Red
-                }
-            }
-        }
-        Pause('Press any key to continue...')
-    }
-}
-
-Import-Module .\Write-Menu.psm1
-
-$menuReturn = Write-Menu -Title 'Custom Menu' -Entries @(
-    'Menu Option 1'
-    'Menu Option 2'
-    'Menu Option 3'
-    'Menu Option 4'
-)
-Write-Host $menuReturn
-Exit
 #######################################################################################
 # Select Font
 # ref:https://stackoverflow.com/questions/58855377/add-menu-options-in-a-running-powershell-script
@@ -69,8 +11,9 @@ $ReleasePage = "https://api.github.com/repos/ryanoasis/nerd-fonts/releases/lates
 $Json = Invoke-WebRequest $ReleasePage | ConvertFrom-Json
 $LatestVersion = $Json[0].tag_name
 
-$Font_Name_Extend = Show-Menu
+$Font_Name_Extend = Write-Menu -Title 'Select one Nerd-Font' -Entries @($Json[0].assets.name)
 $Font_Name = $Font_Name_Extend.Split(".")[0]
+Write-Host $Font_Name_Extend
 
 #######################################################################################
 # Download Sources from github
@@ -129,5 +72,5 @@ if ($IsWindows) {
 #
 # Clean
 Write-Host Cleanup $Font_Name folder and zip
-Remove-Item $PSScriptRoot\$Font_Name -Recurse -Force -ErrorAction SilentlyContinue 
+Remove-Item $PSScriptRoot\$Font_Name -Recurse -ErrorAction SilentlyContinue 
 Remove-Item $PSScriptRoot\$Font_Name_Extend
