@@ -50,6 +50,17 @@ function Show-Menu {
         Pause('Press any key to continue...')
     }
 }
+
+Import-Module .\Write-Menu.psm1
+
+$menuReturn = Write-Menu -Title 'Custom Menu' -Entries @(
+    'Menu Option 1'
+    'Menu Option 2'
+    'Menu Option 3'
+    'Menu Option 4'
+)
+Write-Host $menuReturn
+Exit
 #######################################################################################
 # Select Font
 # ref:https://stackoverflow.com/questions/58855377/add-menu-options-in-a-running-powershell-script
@@ -84,24 +95,26 @@ else {
 
 ########################################################################################
 # Insatll Font 
+#Reference:
 #https://github.com/mikeTWC1984/pwshise/blob/ee3209eac079e4b0adc40c569f25ec77a75a6ad3/fonts/FontInstaller.ps1
 #https://gist.github.com/anthonyeden/0088b07de8951403a643a8485af2709b
 #https://richardspowershellblog.wordpress.com/2008/03/20/special-folders/
-
+#https://jordanmalcolm.com/deploying-windows-10-fonts-at-scale/
 if ($IsWindows) {
     $Destination = (New-Object -ComObject Shell.Application).Namespace(0x14)
     # Check if already installed 
     # '*.ttf', '*.ttc', '*.otf'
     Get-ChildItem -Path $PSScriptRoot\$Font_Name -Include '*.otf' -Recurse | ForEach-Object {
-        #if (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
-        if (-not(Test-Path "$env:LOCALAPPDATA\Microsoft\Windows\Fonts\$($_.Name)")) {   
-            Write-Host Installing $($_.Name)
+        if (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
+        #if (-not(Test-Path "$env:LOCALAPPDATA\Microsoft\Windows\Fonts\$($_.Name)")) {   
+            Write-Host Installing font  $($_.BaseName)
             
-            # Install font
-            $Destination.CopyHere($_.FullName, 0x14)
+            # Install font for current user
+            #$Destination.CopyHere($_.FullName, 0x14)
 
-            # Delete temporary copy of font
-            #Remove-Item $Font -Force
+            # Install for all user
+            Copy-Item $_.FullName "C:\Windows\Fonts"
+            New-ItemProperty -Name $_.BaseName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $_.name         
         }
         else {
             Write-Host $($_.Name) already installed
