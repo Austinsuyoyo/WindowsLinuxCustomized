@@ -37,20 +37,18 @@ Show-Calendar -HighlightDay (1..10 + 22) -HighlightDate "December 25, 2008"
 #>
 function Show-Pause {
     param(
-        [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [Alias('Name')]
+        [Parameter()]
         [string]
         $Message
     )
-    
     # Check if running Powershell ISE
     if ($psISE) {
         Add-Type -AssemblyName System.Windows.Forms
         [System.Windows.Forms.MessageBox]::Show("$Message")
     }
     else {
-        Write-Host "$Message" -ForegroundColor Yellow
-        $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        Write-Host "$Message" -ForegroundColor Red
+        [void]($host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown"))
     }
 }
 Export-ModuleMember -Function Show-Pause
