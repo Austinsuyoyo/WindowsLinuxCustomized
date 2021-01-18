@@ -416,7 +416,8 @@ function Write-Menu {
     Get-Page
 
     [System.Console]::CursorTop = $host.UI.RawUI.WindowSize.Height-3
-    [System.Console]::WriteLine("(`↑)UP (↓)DOWN (←) Previous page (→) Next page (Enter) Confirm selection (Space) Check selection (Esc) Exit")
+    #(Space) Check selection
+    [System.Console]::WriteLine("(`↑)UP (↓)DOWN (←) Previous page (→) Next page (Enter) Confirm selection (Esc) Exit")
     
     # Declare hashtable for nested entries
     $menuNested = [ordered]@{}

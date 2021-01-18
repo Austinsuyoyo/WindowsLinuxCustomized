@@ -1,7 +1,26 @@
+
 #######################################################################################
 # Import Module
 Import-Module $PSScriptRoot\utils\Write-Menu.psm1
 Import-Module $PSScriptRoot\utils\Show-Pause.psm1
+
+#######################################################################################
+$title = "1.[Option] All User or Current User"
+$message = "Select 'All User' will installed in C:\Windows\Fonts\ `nSelect 'Current User' will installed in $($env:LOCALAPPDATA)\Microsoft\Windows\Fonts\"
+
+$all = New-Object System.Management.Automation.Host.ChoiceDescription "&All User", "Installed in C:\Windows\Fonts\"
+$cur = New-Object System.Management.Automation.Host.ChoiceDescription "&Current User", "Installed in $($env:LOCALAPPDATA)\Microsoft\Windows\Fonts\"
+
+$choices = [System.Management.Automation.Host.ChoiceDescription[]]($all, $cur)
+$AllUserFlag = $host.UI.PromptForChoice($title, $message, $choices, 0)
+
+if($AllUserFlag -eq 0){
+    #https://superuser.com/questions/749243/detect-if-powershell-is-running-as-administrator
+    if(-not([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"))){
+        Show-Pause "Please run as Admininstrator"
+        Exit
+    }
+}
 
 #######################################################################################
 # Select Font
@@ -11,7 +30,7 @@ $ReleasePage = "https://api.github.com/repos/ryanoasis/nerd-fonts/releases/lates
 $Json = Invoke-WebRequest $ReleasePage | ConvertFrom-Json
 $LatestVersion = $Json[0].tag_name
 
-$Font_Name_Extend = Write-Menu -Title 'Nerd-Font Menu By ryanoasis' -Entries @($Json[0].assets.name)
+$Font_Name_Extend = Write-Menu -Title '2.[Option] Nerd-Font Menu' -Entries @($Json[0].assets.name)
 if ($null -eq $Font_Name_Extend) {
     Show-Pause "Invalid choice `nPress any key to exit."
     Exit
@@ -44,7 +63,7 @@ else {
 ## TODO:
 ## If downaloaded font have two types(otf & ttf)
 ## If just one type no need ask
-$title = "Font Type"
+$title = "3.[Option] Font Type"
 $message = "Select Font Type to Installed: .otf (Recommend) or .ttf"
 
 $otf = New-Object System.Management.Automation.Host.ChoiceDescription "&otf", "OpenType Font"
@@ -54,18 +73,6 @@ $choices = [System.Management.Automation.Host.ChoiceDescription[]]($otf, $ttf)
 $returnValue = $host.UI.PromptForChoice($title, $message, $choices, 0)
 $FontType = "*." + $choices[$returnValue].Label.Trim("&")
 
-
-$title = "All User or Current User"
-$message = "Select 'All User'A will installed in C:\Windows\Fonts\ `nSelect 'Current User' will installed in $($env:LOCALAPPDATA)\Microsoft\Windows\Fonts\"
-
-$all = New-Object System.Management.Automation.Host.ChoiceDescription "&All User", "Installed in C:\Windows\Fonts\"
-$cur = New-Object System.Management.Automation.Host.ChoiceDescription "&Current User", "Installed in $($env:LOCALAPPDATA)\Microsoft\Windows\Fonts\"
-
-$choices = [System.Management.Automation.Host.ChoiceDescription[]]($all, $cur)
-$AllUserFlag = $host.UI.PromptForChoice($title, $message, $choices, 0)
-
-## TODO:
-##Check admin or retry for current user
 
 ########################################################################################
 # Insatll Font 
