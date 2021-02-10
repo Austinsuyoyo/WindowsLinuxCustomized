@@ -1,0 +1,12 @@
+[submodule "Windows/InstallNerdFonts"]
+	path = Windows/install_nerd_fonts
+	url = https://github.com/Austinsuyoyo/InstallNerdFonts.git
+[submodule "wsl_move"]
+	path = Windows/wsl_move
+	url = https://github.com/pxlrbt/move-wsl.git
+[submodule "Windows/install_nerd_fonts"]
+	path = Windows/install_nerd_fonts
+	url = https://github.com/Austinsuyoyo/InstallNerdFonts.git
+[submodule "Windows/wsl_move"]
+	path = Windows/wsl_move
+	url = https://github.com/pxlrbt/move-wsl.git
