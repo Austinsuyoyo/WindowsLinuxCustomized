@@ -1,0 +1,18 @@
+Windows Registry Editor Version 5.00
+[HKEY_CLASSES_ROOT\*\shell\VSCode]
+@="以 Code 開啟"
+"Icon"="C:\\Program Files\\Microsoft VS Code\\Code.exe"
+[HKEY_CLASSES_ROOT\*\shell\VSCode\command]
+@="\"C:\\Program Files\\Microsoft VS Code\\Code.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\Directory\shell\VSCode]
+@="以 Code 開啟"
+"Icon"="C:\\Program Files\\Microsoft VS Code\\Code.exe"
+[HKEY_CLASSES_ROOT\Directory\shell\VSCode\command]
+@="\"C:\\Program Files\\Microsoft VS Code\\Code.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\VSCode]
+@="以 Code 開啟"
+"Icon"="C:\\Program Files\\Microsoft VS Code\\Code.exe"
+[HKEY_CLASSES_ROOT\Directory\Background\shell\VSCode\command]
+@="\"C:\\Program Files\\Microsoft VS Code\\Code.exe\" \"%V\""
